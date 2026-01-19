@@ -4,6 +4,12 @@ import axios, { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 import { clearAuthToken, getAuthToken } from '@/lib/auth/utils';
 
+// Define error response type
+interface ErrorResponse {
+  detail?: string;
+  message?: string;
+}
+
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
   headers: {
@@ -47,7 +53,7 @@ apiClient.interceptors.response.use(
     console.log('✅ Response from:', response.config.url, 'Status:', response.status);
     return response;
   },
-  (error: AxiosError) => {
+  (error: AxiosError<ErrorResponse>) => {
     console.error('❌ Response error:', error.response?.status, error.config?.url);
 
     // Handle 401 Unauthorized - Session expired or invalid token
